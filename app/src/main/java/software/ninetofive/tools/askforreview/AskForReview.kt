@@ -1,5 +1,6 @@
 package software.ninetofive.tools.askforreview
 
+import android.app.Dialog
 import android.content.Context
 import software.ninetofive.tools.askforreview.conditions.AskForReviewCondition
 import software.ninetofive.tools.askforreview.util.AskForReviewSharedPreferences
@@ -20,10 +21,13 @@ open class AskForReview @Inject constructor() {
         preferences.setDays(System.currentTimeMillis())
     }
 
-    fun showDialog(dialog: AskForReviewDialog, showDialog: (AskForReviewDialog) -> Unit) {
-        val allConditionsAreMet = this.conditions.all { it.hasConditionBeenMade() }
-        if (allConditionsAreMet) {
-            showDialog(dialog)
+    fun canShowDialog(): Boolean {
+        return this.conditions.all { it.hasConditionBeenMade() }
+    }
+
+    fun showDialog(dialog: AskForReviewDialog, showDialog: (Dialog) -> Unit) {
+        if (canShowDialog()) {
+            showDialog(dialog.create())
             preferences.setAlreadyShowed()
         }
     }
