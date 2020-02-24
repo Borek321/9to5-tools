@@ -55,9 +55,6 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    // DateTime
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
-
     // Unit tests
     testImplementation 'junit:junit:4.12'
 

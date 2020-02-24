@@ -1,11 +1,8 @@
 package software.ninetofive.tools.askforreview
 
-import android.app.Dialog
 import android.content.Context
 import software.ninetofive.tools.askforreview.conditions.AskForReviewCondition
 import software.ninetofive.tools.askforreview.util.AskForReviewSharedPreferences
-import java.time.LocalDate
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
