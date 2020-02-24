@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">9to5 Tools</string>
+
+    <string name="dialog_title">Beoordeel deze app</string>
+    <string name="dialog_message">Indien u graag gebruik maakt van deze app, willen wij u vragen om deze te beoordelen. Het kost niet meer dan een minuut van uw tijd. Bedankt voor uw steun!</string>
+    <string name="dialog_rate_button">Beoordeel</string>
+    <string name="dialog_no_thank_you">Nee, bedankt</string>
+    <string name="dialog_later">Later</string>
+
+</resources>
