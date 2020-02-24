@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AskForReview @Inject constructor() {
+open class AskForReview @Inject constructor() {
 
     private lateinit var preferences: AskForReviewSharedPreferences
     private var conditions: List<AskForReviewCondition> = listOf()
