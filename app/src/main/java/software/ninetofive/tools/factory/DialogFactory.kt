@@ -1,27 +1,27 @@
 package software.ninetofive.tools.factory
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import androidx.appcompat.view.ContextThemeWrapper
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import software.ninetofive.tools.R
+import software.ninetofive.tools.databinding.DialogAskForReviewBinding
 import javax.inject.Inject
 
 class DialogFactory @Inject constructor() {
 
-    open fun createRateAppDialog(context: Context, onClickRate: (Boolean) -> Unit): Dialog {
-//        val dialog = MaterialAlertDialogBuilder(ContextThemeWrapper(context, R.style.NummiTheme))
-//            .setMessage(R.string.rate_app_message)
-//            .setTitle(R.string.rate_app_title)
-//            .setPositiveButton(R.string.rate_app_button_later) { d, _ -> d.dismiss() }
-//            .create()
-//        dialog.setView(createDialogView(context, {
-//            dialog.dismiss()
-//            onClickRate(true)
-//        }) {
-//            dialog.dismiss()
-//            onClickRate(false)
-//        })
-//        return dialog
-
-        return AlertDialog.Builder(context).create()
+    fun createDialogView(
+        context: Context,
+        onPositiveFeedback: () -> Unit,
+        onNegativeFeedback: () -> Unit
+    ): View {
+        val binding = DialogAskForReviewBinding.inflate(LayoutInflater.from(context), null, false)
+        binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            if (rating > 3) onPositiveFeedback() else onNegativeFeedback()
+        }
+        return binding.root
     }
+
 }

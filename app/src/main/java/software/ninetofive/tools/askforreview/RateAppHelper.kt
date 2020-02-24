@@ -1,4 +1,4 @@
-package software.ninetofive.tools
+package software.ninetofive.tools.askforreview
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -24,19 +24,19 @@ open class RateAppHelper @Inject constructor(
     }
 
     fun shouldShowDialog(context: Context): Boolean {
-//        val isRatingEnabled = remoteConfig.requestReview.value ?: false
-//
-//        var askAfterTimesOpenedApp =
-//            remoteConfig.reviewMinLaunchesUntilPrompt.value ?: 0
-//        if (askAfterTimesOpenedApp == 0) {
-//            askAfterTimesOpenedApp = FALL_BACK_VALUE_LAUNCH
-//        }
-//        var askAfterDays = remoteConfig.reviewMinDaysUntilPrompt.value ?: 0
-//        if (askAfterDays == 0) {
-//            askAfterDays = FALL_BACK_VALUE_DAYS
-//        }
-//
-//        return shouldShowDialog(context, isRatingEnabled, askAfterTimesOpenedApp, askAfterDays)
+        val isRatingEnabled = remoteConfig.requestReview.value ?: false
+
+        var askAfterTimesOpenedApp =
+            remoteConfig.reviewMinLaunchesUntilPrompt.value ?: 0
+        if (askAfterTimesOpenedApp == 0) {
+            askAfterTimesOpenedApp = FALL_BACK_VALUE_LAUNCH
+        }
+        var askAfterDays = remoteConfig.reviewMinDaysUntilPrompt.value ?: 0
+        if (askAfterDays == 0) {
+            askAfterDays = FALL_BACK_VALUE_DAYS
+        }
+
+        return shouldShowDialog(context, isRatingEnabled, askAfterTimesOpenedApp, askAfterDays)
         return true
     }
 
