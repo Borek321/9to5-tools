@@ -1,0 +1,76 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+version vName
+group 'software.9to5'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "borekbeker925"
+            name "Borek Beker"
+            email "borek.beker@9to5.software"
+        }
+    }
+
+    scm {
+        url "https://github.com/Borek321/9to5-tools"
+    }
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact sourcesJar
+            artifact "$buildDir/outputs/aar/review-release.aar"
+
+            groupId 'software.9to5'
+            artifactId 'review'
+            version vName
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Ask for review')
+                root.appendNode('name', 'Review')
+                root.appendNode('url', 'https://github.com/Borek321/9to5-tools')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def bintrayUser = properties.getProperty('bintrayUser')
+    def bintrayApiKey = properties.getProperty('bintrayApiKey')
+
+    user = bintrayUser
+    key = bintrayApiKey
+    publications = ['Production']
+    configurations = ['archives']
+    override = true
+
+    pkg {
+        repo = '9to5-tools'
+        name = 'Review'
+        description = "An example of using the bintray plugin with gradle plugin 3.0.0"
+        publish = true
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/bintray/gradle-bintray-plugin.git'
+        version {
+            name = vName
+        }
+    }
+}
