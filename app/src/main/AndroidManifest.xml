@@ -3,6 +3,7 @@
     package="software.ninetofive.tools">
 
     <application
+        android:name=".TestApplication"
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning">
 
@@ -18,4 +19,5 @@
         </activity>
 
     </application>
+
 </manifest>
