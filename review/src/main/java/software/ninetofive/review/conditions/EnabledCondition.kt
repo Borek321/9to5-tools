@@ -1,4 +1,4 @@
-package software.ninetofive.tools.askforreview.conditions
+package software.ninetofive.review.conditions
 
 class EnabledCondition(private val isEnabled: Boolean): AskForReviewCondition {
 

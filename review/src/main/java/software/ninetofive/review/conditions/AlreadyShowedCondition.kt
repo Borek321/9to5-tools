@@ -1,7 +1,7 @@
-package software.ninetofive.tools.askforreview.conditions
+package software.ninetofive.review.conditions
 
 import android.content.Context
-import software.ninetofive.tools.askforreview.util.AskForReviewSharedPreferences
+import software.ninetofive.review.util.AskForReviewSharedPreferences
 
 class AlreadyShowedCondition(context: Context): AskForReviewCondition {
 

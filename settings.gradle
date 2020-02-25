@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':review'
 rootProject.name='9to5 Tools'

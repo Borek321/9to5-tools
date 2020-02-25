@@ -1,4 +1,4 @@
-package software.ninetofive.tools.askforreview.util
+package software.ninetofive.review.util
 
 import android.content.Context
 import android.content.SharedPreferences

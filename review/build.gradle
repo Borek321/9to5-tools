@@ -1,0 +1,136 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    dataBinding {
+        enabled = true
+    }
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    // Android
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+
+    // Material
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
+
+    // Dagger
+    def daggerVersion = '2.25.2'
+    kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    // Unit tests
+    testImplementation 'junit:junit:4.12'
+
+    // UI Tests
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+version '1.0.0'
+group 'software.9to5'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "borekbeker925"
+            name "Borek Beker"
+            email "borek.beker@9to5.software"
+        }
+    }
+
+    scm {
+        url "https://github.com/Borek321/9to5-tools"
+    }
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact sourcesJar
+            artifact "$buildDir/outputs/aar/review-release.aar"
+
+            groupId 'software.9to5'
+            artifactId 'review'
+            version '1.0.0'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Ask for review')
+                root.appendNode('name', 'Review')
+                root.appendNode('url', 'https://github.com/Borek321/9to5-tools')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def bintrayUser = properties.getProperty('bintrayUser')
+    def bintrayApiKey = properties.getProperty('bintrayApiKey')
+
+    user = bintrayUser
+    key = bintrayApiKey
+    publications = ['Production']
+    configurations = ['archives']
+    override = true
+
+    pkg {
+        repo = '9to5-tools'
+        name = 'Review'
+        description = "An example of using the bintray plugin with gradle plugin 3.0.0"
+        publish = true
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/bintray/gradle-bintray-plugin.git'
+        version {
+            name = "1.0.0"
+        }
+    }
+}

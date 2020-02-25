@@ -1,12 +1,11 @@
-package software.ninetofive.tools.askforreview
+package software.ninetofive.review
 
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import software.ninetofive.tools.R
-import software.ninetofive.tools.databinding.DialogAskForReviewBinding
+import software.ninetofive.review.databinding.DialogAskForReviewBinding
 
 class AskForReviewDialog(
     private val context: Context,
