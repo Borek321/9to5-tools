@@ -1,7 +1,7 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-version reviewVersionName
+version photoselectorVersionName
 group 'software.9to5'
 
 task sourcesJar(type: Jar) {
@@ -34,15 +34,15 @@ publishing {
     publications {
         Production(MavenPublication) {
             artifact sourcesJar
-            artifact "$buildDir/outputs/aar/review-release.aar"
+            artifact "$buildDir/outputs/aar/photoselector-release.aar"
 
             groupId 'software.9to5'
-            artifactId 'review'
-            version reviewVersionName
+            artifactId 'photoselector'
+            version photoselectorVersionName
             pom.withXml {
                 def root = asNode()
-                root.appendNode('description', 'Ask for review')
-                root.appendNode('name', 'Review')
+                root.appendNode('description', 'Select a photo from camera or gallery')
+                root.appendNode('name', 'Photo Selector')
                 root.appendNode('url', 'https://github.com/Borek321/9to5-tools')
                 root.children().last() + pomConfig
             }
@@ -64,13 +64,14 @@ bintray {
 
     pkg {
         repo = '9to5-tools'
-        name = 'Review'
-        description = "An example of using the bintray plugin with gradle plugin 3.0.0"
+        name = 'Photo Selector'
+        description = "Select a photo from camera or gallery"
         publish = true
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/bintray/gradle-bintray-plugin.git'
         version {
-            name = reviewVersionName
+            name = photoselectorVersionName
         }
     }
 }
+
