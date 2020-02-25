@@ -64,7 +64,7 @@ bintray {
 
     pkg {
         repo = '9to5-tools'
-        name = 'Photo Selector'
+        name = 'Photoselector'
         description = "Select a photo from camera or gallery"
         publish = true
         licenses = ['Apache-2.0']
