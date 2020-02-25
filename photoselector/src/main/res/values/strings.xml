@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Photo Selector</string>
+
+    <string name="dialog_select_type_title">How would you like to select an image?</string>
+    <string name="dialog_select_type_option_take_picture">Foto maken</string>
+    <string name="dialog_select_type_option_choose_image">Afbeelding selecteren</string>
 </resources>
