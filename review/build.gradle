@@ -53,6 +53,9 @@ dependencies {
     // Unit tests
     testImplementation 'junit:junit:4.12'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "org.powermock:powermock-module-junit4:2.0.0"
+    testImplementation "org.powermock:powermock-module-junit4-rule:2.0.0"
+    testImplementation "org.powermock:powermock-api-mockito2:2.0.0"
 
     // UI Tests
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
