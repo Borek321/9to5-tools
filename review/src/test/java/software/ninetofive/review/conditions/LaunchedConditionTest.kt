@@ -10,36 +10,39 @@ import org.junit.Test
 import org.mockito.Mockito
 import software.ninetofive.review.util.AskForReviewSharedPreferences
 
-class DaysConditionTest {
+class LaunchedConditionTest {
 
     lateinit var context: Context
+    val launchAmount = 10
     lateinit var preferences: AskForReviewSharedPreferences
-    val daysAmount = 1
 
-    lateinit var condition: DaysCondition
+    lateinit var condition: LaunchedCondition
 
     @Before
     fun setUp() {
         context = mock()
         preferences = mock()
 
-        condition = DaysCondition(context, daysAmount, preferences)
+        condition = LaunchedCondition(context, launchAmount, preferences)
     }
 
     @Test
-    fun hasConditionBeenMade_returnsTrueIfDifferenceIsHigher() {
-        Mockito.`when`(preferences.getDaysTimeStampInMilliseconds()).doReturn(System.currentTimeMillis() - (daysAmount + 1) * 1000L * 60L * 60L * 24L)
+    fun hasConditionBeenMade_returnsTrueIfLaunchCountIsSameAsLauncAmount() {
+        val launchCount = 10
+        Mockito.`when`(preferences.getLaunchCount()).doReturn(launchCount)
         val result = condition.hasConditionBeenMade()
 
         assertTrue(result)
     }
 
     @Test
-    fun hasConditionBeenMade_returnsFalseIfDifferenceIsNotHigher() {
-        Mockito.`when`(preferences.getDaysTimeStampInMilliseconds()).doReturn(System.currentTimeMillis() - (1000L * 60L * 60L * 24L / 2).toInt())
+    fun hasConditionBeenMade_returnsFalseIfLaunchCountIsNotSameAsLauncAmount() {
+        val launchCount = 2
+        Mockito.`when`(preferences.getLaunchCount()).doReturn(launchCount)
         val result = condition.hasConditionBeenMade()
 
         assertFalse(result)
     }
+
 
 }
