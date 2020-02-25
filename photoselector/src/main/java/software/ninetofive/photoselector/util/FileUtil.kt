@@ -4,14 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
-import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class FileUtil {
+class FileUtil @Inject constructor() {
 
     fun createJpegImageFile(context: Context, type: String = "jpeg"): File? {
         return try {

@@ -3,8 +3,9 @@ package software.ninetofive.photoselector.factory
 import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
+import javax.inject.Inject
 
-class IntentFactory {
+class IntentFactory @Inject constructor() {
 
     fun createTakePictureIntent(context: Context): Intent? {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

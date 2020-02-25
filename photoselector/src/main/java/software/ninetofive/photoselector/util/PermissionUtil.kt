@@ -8,8 +8,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
 
-class PermissionUtil {
+class PermissionUtil @Inject constructor() {
 
     var isRationaleShown: Boolean = false
     var showRationale: (() -> Unit)? = null

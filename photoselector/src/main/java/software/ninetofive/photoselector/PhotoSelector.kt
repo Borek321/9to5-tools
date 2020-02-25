@@ -16,13 +16,14 @@ import software.ninetofive.photoselector.util.FileUtil
 import software.ninetofive.photoselector.util.PermissionUtil
 import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
-class PhotoSelector(
-    private val dialogFactory: DialogFactory = DialogFactory(),
-    private val permissionUtil: PermissionUtil = PermissionUtil(),
-    private val intentFactory: IntentFactory = IntentFactory(),
-    private val fileUtil: FileUtil = FileUtil(),
-    private val fileUriFactory: FileUriFactory = FileUriFactory()
+class PhotoSelector @Inject constructor(
+    private val dialogFactory: DialogFactory,
+    private val permissionUtil: PermissionUtil,
+    private val intentFactory: IntentFactory,
+    private val fileUtil: FileUtil,
+    private val fileUriFactory: FileUriFactory
 ) {
 
     private val context: Context?
