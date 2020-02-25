@@ -12,15 +12,15 @@ open class AskForReviewSharedPreferences(context: Context) {
     private val daysKey: String = "${SHARED_PREFERENCES_KEY_DAYS}-$currentVersion"
     private val alreadyShowedKey: String = "${SHARED_PREFERENCES_KEY_ALREADY_SHOWED}-$currentVersion"
 
-    fun getLaunchCount(): Int {
+    open fun getLaunchCount(): Int {
         return sharedPreferences.getInt(launchedKey, 0)
     }
 
-    fun getDaysTimeStampInMilliseconds(): Long {
+    open fun getDaysTimeStampInMilliseconds(): Long {
         return sharedPreferences.getLong(daysKey, -1L)
     }
 
-    fun getAlreadyShowed(): Boolean {
+    open fun getAlreadyShowed(): Boolean {
         return sharedPreferences.getBoolean(alreadyShowedKey, false)
     }
 
