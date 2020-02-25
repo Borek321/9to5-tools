@@ -14,9 +14,11 @@ open class AskForReview @Inject constructor() {
     private var conditions: List<AskForReviewCondition> = listOf()
 
     fun initialize(context: Context, conditions: List<AskForReviewCondition>) {
-        this.conditions = conditions
+        initialize(conditions, AskForReviewSharedPreferences(context))
+    }
 
-        preferences = AskForReviewSharedPreferences(context)
+    fun initialize(conditions: List<AskForReviewCondition>, preferences: AskForReviewSharedPreferences) {
+        this.conditions = conditions
         preferences.incrementLaunchCount()
         preferences.setDays(System.currentTimeMillis())
     }

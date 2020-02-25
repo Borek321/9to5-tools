@@ -3,7 +3,7 @@ package software.ninetofive.review.util
 import android.content.Context
 import android.content.SharedPreferences
 
-class AskForReviewSharedPreferences(context: Context) {
+open class AskForReviewSharedPreferences(context: Context) {
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     private val currentVersion: String = context.packageManager.getPackageInfo(context.packageName, 0).versionName
@@ -24,18 +24,18 @@ class AskForReviewSharedPreferences(context: Context) {
         return sharedPreferences.getBoolean(alreadyShowedKey, false)
     }
 
-    fun incrementLaunchCount() {
+    open fun incrementLaunchCount() {
         sharedPreferences.edit().putInt(launchedKey, getLaunchCount() + 1).apply()
     }
 
-    fun setDays(epochInMilliseconds: Long) {
+    open fun setDays(epochInMilliseconds: Long) {
         val hasDaySetForThisVersion = getDaysTimeStampInMilliseconds() >= 0L
         if (!hasDaySetForThisVersion) {
             sharedPreferences.edit().putLong(daysKey, epochInMilliseconds).apply()
         }
     }
 
-    fun setAlreadyShowed() {
+    open fun setAlreadyShowed() {
         sharedPreferences.edit().putBoolean(alreadyShowedKey, true).apply()
     }
 

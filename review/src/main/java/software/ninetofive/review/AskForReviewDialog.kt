@@ -2,25 +2,30 @@ package software.ninetofive.review
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.StyleRes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import software.ninetofive.review.databinding.DialogAskForReviewBinding
 
-class AskForReviewDialog(
+open class AskForReviewDialog(
     private val context: Context,
+    @StyleRes private val style: Int,
     private val title: String = context.getString(R.string.dialog_title),
     private val message: String = context.getString(R.string.dialog_message),
     private val ratingThreshold: Int = 4,
     private val onRatingClicked: OnRatingClicked
 ) {
 
-    fun create(): Dialog {
+    open fun create(): Dialog {
         val dialogView = createDialogView()
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(ContextThemeWrapper(context, style))
             .setTitle(title)
             .setMessage(message)
             .setView(dialogView)
+            .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .create()
     }
 
