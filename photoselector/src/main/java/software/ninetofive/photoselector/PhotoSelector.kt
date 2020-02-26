@@ -13,10 +13,7 @@ import software.ninetofive.photoselector.factory.DialogFactory
 import software.ninetofive.photoselector.factory.FileUriFactory
 import software.ninetofive.photoselector.factory.IntentFactory
 import software.ninetofive.photoselector.interfaces.PhotoSelectorListener
-import software.ninetofive.photoselector.util.BitmapUtil
-import software.ninetofive.photoselector.util.FileUtil
-import software.ninetofive.photoselector.util.MimeUtil
-import software.ninetofive.photoselector.util.PermissionUtil
+import software.ninetofive.photoselector.util.*
 import java.io.File
 import javax.inject.Inject
 
@@ -190,6 +187,19 @@ class PhotoSelector @Inject constructor(
     companion object {
         const val TAKE_PICTURE_REQUEST_CODE = 533
         const val SELECT_IMAGE_REQUEST_CODE = 555
+
+        fun newInstance(): PhotoSelector {
+            val uriFactory = FileUriFactory()
+            return PhotoSelector(
+                DialogFactory(),
+                PermissionUtil(BuildVersionUtil()),
+                IntentFactory(),
+                FileUtil(uriFactory),
+                uriFactory,
+                MimeUtil(),
+                BitmapUtil()
+            )
+        }
     }
 
 }

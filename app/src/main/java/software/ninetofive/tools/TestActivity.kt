@@ -23,9 +23,8 @@ import javax.inject.Inject
 class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener, AskForReviewDialog.OnRatingClicked {
 
     private lateinit var model: TestActivityViewModel
+    private lateinit var photoSelector: PhotoSelector
 
-    @Inject
-    lateinit var photoSelector: PhotoSelector
     @Inject
     lateinit var imageRotator: ImageRotator
     @Inject
@@ -40,6 +39,8 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener, AskForRev
                 return modelClass.newInstance()
             }
         }).get(TestActivityViewModel::class.java)
+        photoSelector = PhotoSelector.newInstance()
+
         val binding: ActivityTestBinding = DataBindingUtil.setContentView(this, R.layout.activity_test)
         binding.model = model
         binding.lifecycleOwner = this
