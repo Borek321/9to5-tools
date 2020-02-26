@@ -38,16 +38,19 @@ class PhotoSelector @Inject constructor(
 
     private var currentFile: File? = null
 
-    fun start(fragment: Fragment, options: Map<Options, Any>, onComplete: (File) -> Unit) {
-        this.fragment = fragment
-        this.onComplete = onComplete
-        start(fragment.context ?: return, options)
+    fun start(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
+        setup(activity, fragment, options, onComplete)
+        start(options)
     }
 
-    fun start(activity: Activity, options: Map<Options, Any>, onComplete: (File) -> Unit) {
-        this.activity = activity
-        this.onComplete = onComplete
-        start(activity, options)
+    fun startTakePicture(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
+        setup(activity, fragment, options, onComplete)
+        onTakePictureSelected()
+    }
+
+    fun startSelectImage(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
+        setup(activity, fragment, options, onComplete)
+        onSelectImageSelected()
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -72,8 +75,8 @@ class PhotoSelector @Inject constructor(
 
     // Private functions
 
-    @Suppress("UNCHECKED_CAST")
-    private fun start(context: Context, options: Map<Options, Any>) {
+    private fun start(options: Map<Options, Any>) {
+        val context = context ?: return
         val dialog = dialogFactory.createTypeSelectionDialog(
             context,
             if (options.containsKey(Options.TITLE_RESOURCE_ID)) options[Options.TITLE_RESOURCE_ID] as Int else R.string.dialog_select_type_title,
@@ -82,8 +85,7 @@ class PhotoSelector @Inject constructor(
             this::onTakePictureSelected,
             this::onSelectImageSelected
         )
-        fileProviderAuthorityName = if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) options[Options.FILE_PROVIDER_AUTHORITY_NAME] as String else throw IOException("Please provide a file provider authority")
-        permissionUtil.showRationale = if (options.containsKey(Options.RATIONALE_HANDLER)) options[Options.RATIONALE_HANDLER] as () -> Unit else null
+
 
         dialog.show()
     }
@@ -131,6 +133,15 @@ class PhotoSelector @Inject constructor(
         val file = fileUtil.persistBitmap(context, bitmap, type) ?: return
 
         onComplete(file)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun setup(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
+        this.activity = activity
+        this.fragment = fragment
+        this.onComplete = onComplete
+        fileProviderAuthorityName = if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) options[Options.FILE_PROVIDER_AUTHORITY_NAME] as String else throw IOException("Please provide a file provider authority")
+        permissionUtil.showRationale = if (options.containsKey(Options.RATIONALE_HANDLER)) options[Options.RATIONALE_HANDLER] as () -> Unit else null
     }
 
     enum class Options {

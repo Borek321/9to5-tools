@@ -17,7 +17,7 @@ class TestActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val authority = "$packageName.fileprovider"
-        photoSelector.start(this, mapOf(
+        photoSelector.start(activity = this, options = mapOf(
             PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME to authority,
             PhotoSelector.Options.RATIONALE_HANDLER to {
                 photoSelector.allowedRationale()
