@@ -13,7 +13,11 @@ implementation software.9to5:photoselector:$photo_selector_version
 
 ### Implementation in your app
 
-This library makes use of the `CAMERA` permission. Please put `<uses-permission android:name="android.permission.CAMERA"/>` in your AndroidManifest.
+This library makes use of the `CAMERA` permission. Please put 
+```
+<uses-permission android:name="android.permission.CAMERA"/>
+```
+in your AndroidManifest.
 
 #### Instatiate the PhotoSelector class
 
@@ -73,8 +77,12 @@ If you don't want to use the provided dialog, you can use the specialized functi
 
 To make your usage of the Photo selector a bit more customized, a few options can be given:
 
-- `TITLE_RESOURCE_ID`: Int -> The resource id that will be used as a title of the image type selection
-- `TAKE_PICTURE_RESOURCE_ID`: Int -> The resource id that will be used as the "take picture" button
-- `SELECT_IMAGE_RESOURCE_ID`: Int -> The resource id that will be used as the "select image" button
-- `FILE_PROVIDER_AUTHORITY_NAME`: String -> The name of your file provider. To use the take picture functionality, a provider should be defined in your Manifest.
-- `RATIONALE_HANDLER`: () -> Unit -> A function that is called when an activity or fragment requires to show a rationale to the user. This option is required if `[fragment or activity].shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)` returns true.
+- `TITLE_RESOURCE_ID: Int` -> The resource id that will be used as a title of the image type selection
+- `TAKE_PICTURE_RESOURCE_ID: Int` -> The resource id that will be used as the "take picture" button
+- `SELECT_IMAGE_RESOURCE_ID: Int` -> The resource id that will be used as the "select image" button
+- `FILE_PROVIDER_AUTHORITY_NAME: String` -> The name of your file provider. To use the take picture functionality, a provider should be defined in your Manifest.
+- `RATIONALE_HANDLER: () -> Unit` -> A function that is called when an activity or fragment requires to show a rationale to the user. This option is required if 
+```
+[fragment or activity].shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
+```
+returns true.
