@@ -43,6 +43,9 @@ dependencies {
     // Material
     implementation "com.google.android.material:material:1.2.0-alpha05"
 
+    // Exif
+    implementation "androidx.exifinterface:exifinterface:1.1.0"
+
     // Dagger
     def daggerVersion = '2.25.2'
     kaptAndroidTest "com.google.dagger:dagger-android-processor:$daggerVersion"
