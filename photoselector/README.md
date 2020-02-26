@@ -7,7 +7,9 @@ This library can be used to remove a lot of the boilerplate logic with taking a 
 ### Gradle dependency
 
 Add this to your module level gradle file
-`implementation software.9to5:photoselector:$photo_selector_version`
+```
+implementation software.9to5:photoselector:$photo_selector_version
+```
 
 ### Implementation in your app
 
