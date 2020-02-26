@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class FileUtil @Inject constructor() {
+open class FileUtil @Inject constructor() {
 
     fun createJpegImageFile(context: Context, type: String = "jpeg"): File? {
         return try {

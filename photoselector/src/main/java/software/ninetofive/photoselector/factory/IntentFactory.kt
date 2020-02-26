@@ -5,7 +5,7 @@ import android.content.Intent
 import android.provider.MediaStore
 import javax.inject.Inject
 
-class IntentFactory @Inject constructor() {
+open class IntentFactory @Inject constructor() {
 
     fun createTakePictureIntent(context: Context): Intent? {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

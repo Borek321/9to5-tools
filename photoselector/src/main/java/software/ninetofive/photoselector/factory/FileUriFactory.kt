@@ -7,7 +7,7 @@ import java.io.File
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
-class FileUriFactory @Inject constructor() {
+open class FileUriFactory @Inject constructor() {
 
     fun createUriForFile(file: File, fileProviderAuthorityName: String, context: Context): Uri? {
         return try {

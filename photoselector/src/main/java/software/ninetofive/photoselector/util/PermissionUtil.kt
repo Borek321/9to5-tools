@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import javax.inject.Inject
 
-class PermissionUtil @Inject constructor() {
+open class PermissionUtil @Inject constructor() {
 
     var isRationaleShown: Boolean = false
     var showRationale: (() -> Unit)? = null
@@ -38,7 +38,7 @@ class PermissionUtil @Inject constructor() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 
-    fun shouldShowRationale(activity: Activity? = null, fragment: Fragment? = null): Boolean {
+    open fun shouldShowRationale(activity: Activity? = null, fragment: Fragment? = null): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
                 ?: fragment?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)

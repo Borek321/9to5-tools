@@ -8,9 +8,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import software.ninetofive.photoselector.R
 import javax.inject.Inject
 
-class DialogFactory @Inject constructor() {
+open class DialogFactory @Inject constructor() {
 
-    fun createTypeSelectionDialog(
+    open fun createTypeSelectionDialog(
         context: Context,
         @StringRes titleResource: Int,
         @StringRes takePictureResource: Int,

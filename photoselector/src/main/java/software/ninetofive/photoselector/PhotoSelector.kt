@@ -161,7 +161,7 @@ class PhotoSelector @Inject constructor(
     private fun validateOptions(activity: Activity?, fragment: Fragment?, options: Map<Options, Any>): Boolean {
         if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
             val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
-            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
+            if (!options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale) {
                 listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
             } else {
                 return true
