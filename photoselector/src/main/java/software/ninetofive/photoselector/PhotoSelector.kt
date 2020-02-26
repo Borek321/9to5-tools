@@ -41,30 +41,16 @@ class PhotoSelector @Inject constructor(
     fun start(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
         setup(activity, fragment, options, listener)
 
-        if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
-            val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
-            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
-                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
-            } else {
-                start(options)
-            }
-        } else {
-            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+        if (validateOptions(activity, fragment, options)) {
+            start(options)
         }
     }
 
     fun startTakePicture(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
         setup(activity, fragment, options, listener)
 
-        if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
-            val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
-            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
-                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
-            } else {
-                onTakePictureSelected()
-            }
-        } else {
-            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+        if (validateOptions(activity, fragment, options)) {
+            onTakePictureSelected()
         }
     }
 
@@ -170,6 +156,21 @@ class PhotoSelector @Inject constructor(
         this.options = options
 
         permissionUtil.showRationale = if (options.containsKey(Options.RATIONALE_HANDLER)) options[Options.RATIONALE_HANDLER] as () -> Unit else null
+    }
+
+    private fun validateOptions(activity: Activity?, fragment: Fragment?, options: Map<Options, Any>): Boolean {
+        if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
+            val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
+            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
+                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
+            } else {
+                return true
+            }
+        } else {
+            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+        }
+
+        return false
     }
 
     enum class Options {
