@@ -12,10 +12,10 @@ import androidx.fragment.app.Fragment
 import software.ninetofive.photoselector.factory.DialogFactory
 import software.ninetofive.photoselector.factory.FileUriFactory
 import software.ninetofive.photoselector.factory.IntentFactory
+import software.ninetofive.photoselector.interfaces.PhotoSelectorListener
 import software.ninetofive.photoselector.util.FileUtil
 import software.ninetofive.photoselector.util.PermissionUtil
 import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 class PhotoSelector @Inject constructor(
@@ -33,31 +33,57 @@ class PhotoSelector @Inject constructor(
 
     private var fragment: Fragment? = null
     private var activity: Activity? = null
-    private lateinit var fileProviderAuthorityName: String
-    private lateinit var onComplete: (File) -> Unit
+    private lateinit var options: Map<Options, Any>
+    private lateinit var listener: PhotoSelectorListener
 
     private var currentFile: File? = null
 
-    fun start(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
-        setup(activity, fragment, options, onComplete)
-        start(options)
+    fun start(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
+        setup(activity, fragment, options, listener)
+
+        if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
+            val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
+            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
+                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
+            } else {
+                start(options)
+            }
+        } else {
+            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+        }
     }
 
-    fun startTakePicture(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
-        setup(activity, fragment, options, onComplete)
-        onTakePictureSelected()
+    fun startTakePicture(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
+        setup(activity, fragment, options, listener)
+
+        if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
+            val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
+            if (!(options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale)) {
+                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
+            } else {
+                onTakePictureSelected()
+            }
+        } else {
+            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+        }
     }
 
-    fun startSelectImage(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
-        setup(activity, fragment, options, onComplete)
+    fun startSelectImage(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
+        setup(activity, fragment, options, listener)
         onSelectImageSelected()
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TAKE_PICTURE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onComplete(currentFile ?: return)
+            if (currentFile != null) {
+                currentFile?.let(listener::onSuccessPhotoSelected)
+            } else {
+                listener.onFailurePhotoSelected(GenericException())
+            }
         } else if (requestCode == SELECT_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.data?.let(this::handleSelectImageResult)
+        } else if (resultCode != Activity.RESULT_OK) {
+            listener.onFailurePhotoSelected(GenericException())
         }
     }
 
@@ -65,6 +91,8 @@ class PhotoSelector @Inject constructor(
         val isPermissionGranted = permissionUtil.isPermissionGranted(requestCode, grantResults)
         if (isPermissionGranted) {
             onTakePictureSelected()
+        } else {
+            listener.onFailurePhotoSelected(PermissionException())
         }
     }
 
@@ -86,7 +114,6 @@ class PhotoSelector @Inject constructor(
             this::onSelectImageSelected
         )
 
-
         dialog.show()
     }
 
@@ -99,6 +126,7 @@ class PhotoSelector @Inject constructor(
                 this.currentFile = imageFile
 
                 val takePictureIntent = intentFactory.createTakePictureIntent(context)
+                val fileProviderAuthorityName = options[Options.FILE_PROVIDER_AUTHORITY_NAME] as String
                 val photoUri = fileUriFactory.createUriForFile(imageFile, fileProviderAuthorityName, context)
                 takePictureIntent?.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 
@@ -106,8 +134,7 @@ class PhotoSelector @Inject constructor(
                 fragment?.startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE)
             }
         } else {
-            activity?.let { permissionUtil.requestCameraPermissions(it) }
-                ?: fragment?.let { permissionUtil.requestCameraPermissions(it) }
+            permissionUtil.requestCameraPermissions(activity, fragment)
         }
     }
 
@@ -132,15 +159,16 @@ class PhotoSelector @Inject constructor(
         }
         val file = fileUtil.persistBitmap(context, bitmap, type) ?: return
 
-        onComplete(file)
+        listener.onSuccessPhotoSelected(file)
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun setup(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, onComplete: (File) -> Unit) {
+    private fun setup(activity: Activity? = null, fragment: Fragment? = null, options: Map<Options, Any>, listener: PhotoSelectorListener) {
         this.activity = activity
         this.fragment = fragment
-        this.onComplete = onComplete
-        fileProviderAuthorityName = if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) options[Options.FILE_PROVIDER_AUTHORITY_NAME] as String else throw IOException("Please provide a file provider authority")
+        this.listener = listener
+        this.options = options
+
         permissionUtil.showRationale = if (options.containsKey(Options.RATIONALE_HANDLER)) options[Options.RATIONALE_HANDLER] as () -> Unit else null
     }
 

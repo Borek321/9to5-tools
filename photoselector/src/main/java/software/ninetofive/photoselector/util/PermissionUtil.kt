@@ -15,19 +15,12 @@ class PermissionUtil @Inject constructor() {
     var isRationaleShown: Boolean = false
     var showRationale: (() -> Unit)? = null
 
-    fun requestCameraPermissions(activity: Activity) {
-        if (!hasCameraPermission(activity) && Build.VERSION.SDK_INT >= 23) {
-            val showPermissionRationale = !isRationaleShown && activity.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
-            requestCameraPermissions(activity, showPermissionRationale)
-        }
-    }
-
-    fun requestCameraPermissions(fragment: Fragment) {
-        val context = fragment.context ?: return
+    fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null) {
+        val context = activity ?: fragment?.context ?: return
 
         if (!hasCameraPermission(context) && Build.VERSION.SDK_INT >= 23) {
-            val showPermissionRationale = !isRationaleShown && fragment.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
-            requestCameraPermissions(fragment, showPermissionRationale)
+            val showPermissionRationale = !isRationaleShown && shouldShowRationale(activity, fragment)
+            requestCameraPermissions(activity, fragment, showPermissionRationale)
         }
     }
 
@@ -45,23 +38,25 @@ class PermissionUtil @Inject constructor() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 
-    // Private functions
-
-    @RequiresApi(23)
-    private fun requestCameraPermissions(activity: Activity, shouldShowPermissionRationale: Boolean) {
-        if (shouldShowPermissionRationale) {
-            showRationale?.invoke()
+    fun shouldShowRationale(activity: Activity? = null, fragment: Fragment? = null): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
+                ?: fragment?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
+                ?: false
         } else {
-            activity.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
+            false
         }
     }
 
-    @RequiresApi(23)
-    private fun requestCameraPermissions(fragment: Fragment, shouldShowPermissionRationale: Boolean) {
-        if (shouldShowPermissionRationale) {
+    // Private functions
 
+    @RequiresApi(23)
+    private fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null, shouldShowPermissionRationale: Boolean) {
+        if (shouldShowPermissionRationale) {
+            showRationale?.invoke()
         } else {
-            fragment.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
+            activity?.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
+            fragment?.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
         }
     }
 
