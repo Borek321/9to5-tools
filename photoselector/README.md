@@ -1,5 +1,7 @@
 # 9to5 Tools: Photo Selector
 
+[ ![Download](https://api.bintray.com/packages/borekbeker925/9to5-tools/Photoselector/images/download.svg?version=1.0.3) ](https://bintray.com/borekbeker925/9to5-tools/Photoselector/_latestVersion/link)
+
 This library can be used to remove a lot of the boilerplate logic with taking a picture from camera or selecting an image from the gallery.
 
 ## Setup
