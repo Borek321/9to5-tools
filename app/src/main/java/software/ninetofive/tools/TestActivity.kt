@@ -1,20 +1,19 @@
 package software.ninetofive.tools
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_test.*
 import software.ninetofive.photoselector.PhotoSelector
 import software.ninetofive.photoselector.exception.PhotoSelectorException
 import software.ninetofive.photoselector.interfaces.PhotoSelectorListener
+import software.ninetofive.review.AskForReview
+import software.ninetofive.review.AskForReviewDialog
+import software.ninetofive.review.conditions.EnabledCondition
 import software.ninetofive.tools.databinding.ActivityTestBinding
 import software.ninetofive.tools.util.ImageRotator
 import java.io.File
@@ -28,6 +27,8 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
     lateinit var photoSelector: PhotoSelector
     @Inject
     lateinit var imageRotator: ImageRotator
+    @Inject
+    lateinit var askForReview: AskForReview
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,16 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
         binding.startButton.setOnClickListener(this::onClickStartButton)
         binding.selectImageButton.setOnClickListener(this::onClickSelectImageButton)
         binding.takePictureButton.setOnClickListener(this::onClickTakePictureButton)
+        binding.askForReview.setOnClickListener(this::onClickShowDialog)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        photoSelector.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        photoSelector.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     // Listeners
@@ -71,13 +82,21 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
         ), listener = this)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        photoSelector.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+    private fun onClickShowDialog(view: View) {
+        val contentView = findViewById<View>(android.R.id.content)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        photoSelector.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+        askForReview.initialize(this, listOf(EnabledCondition(true)))
+        val dialog = AskForReviewDialog(this, R.style.AppTheme, onRatingClicked = object: AskForReviewDialog.OnRatingClicked {
+            override fun onNegativeRating(dialog: AskForReviewDialog, rating: Int) {
+                Snackbar.make(contentView, "Negative rating selected", Snackbar.LENGTH_LONG)
+            }
+
+            override fun onPositiveRating(dialog: AskForReviewDialog, rating: Int) {
+                Snackbar.make(contentView, "Positive rating selected", Snackbar.LENGTH_LONG)
+            }
+
+        })
+        askForReview.showDialog(dialog) { it.show() }
     }
 
     override fun onSuccessPhotoSelected(imageFile: File) {

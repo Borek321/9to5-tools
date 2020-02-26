@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation project(':photoselector')
+    implementation project(':review')
 
     // Android
     implementation fileTree(dir: 'libs', include: ['*.jar'])
