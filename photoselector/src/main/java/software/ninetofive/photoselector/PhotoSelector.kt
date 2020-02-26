@@ -7,13 +7,14 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
 import software.ninetofive.photoselector.factory.DialogFactory
 import software.ninetofive.photoselector.factory.FileUriFactory
 import software.ninetofive.photoselector.factory.IntentFactory
 import software.ninetofive.photoselector.interfaces.PhotoSelectorListener
+import software.ninetofive.photoselector.util.BitmapUtil
 import software.ninetofive.photoselector.util.FileUtil
+import software.ninetofive.photoselector.util.MimeUtil
 import software.ninetofive.photoselector.util.PermissionUtil
 import java.io.File
 import javax.inject.Inject
@@ -23,7 +24,9 @@ class PhotoSelector @Inject constructor(
     private val permissionUtil: PermissionUtil,
     private val intentFactory: IntentFactory,
     private val fileUtil: FileUtil,
-    private val fileUriFactory: FileUriFactory
+    private val fileUriFactory: FileUriFactory,
+    private val mimeUtil: MimeUtil,
+    private val bitmapUtil: BitmapUtil
 ) {
 
     private val context: Context?
@@ -135,15 +138,9 @@ class PhotoSelector @Inject constructor(
     private fun handleSelectImageResult(uri: Uri) {
         val context = context ?: return
         val contentResolver = context.contentResolver
-        val mime = MimeTypeMap.getSingleton()
-        val type = mime.getExtensionFromMimeType(contentResolver?.getType(uri)) ?: return
-        val bitmap = if (Build.VERSION.SDK_INT < 28) {
-            MediaStore.Images.Media.getBitmap(contentResolver, uri)
-        } else {
-            val source = ImageDecoder.createSource(contentResolver, uri)
-            ImageDecoder.decodeBitmap(source)
-        }
-        val file = fileUtil.persistBitmap(context, bitmap, type) ?: return
+        val mimeType = mimeUtil.getMimeType(contentResolver, uri) ?: return
+        val bitmap = bitmapUtil.getBitmap(contentResolver, uri)
+        val file = fileUtil.persistBitmap(context, bitmap, mimeType) ?: return
 
         listener.onSuccessPhotoSelected(file)
     }
@@ -155,7 +152,7 @@ class PhotoSelector @Inject constructor(
         this.listener = listener
         this.options = options
 
-        permissionUtil.showRationale = if (options.containsKey(Options.RATIONALE_HANDLER)) options[Options.RATIONALE_HANDLER] as () -> Unit else null
+        permissionUtil.showRationale = options[Options.RATIONALE_HANDLER] as? () -> Unit
     }
 
     private fun validateOptions(activity: Activity?, fragment: Fragment?, options: Map<Options, Any>): Boolean {
@@ -182,8 +179,8 @@ class PhotoSelector @Inject constructor(
     }
 
     companion object {
-        private const val TAKE_PICTURE_REQUEST_CODE = 533
-        private const val SELECT_IMAGE_REQUEST_CODE = 555
+        const val TAKE_PICTURE_REQUEST_CODE = 533
+        const val SELECT_IMAGE_REQUEST_CODE = 555
     }
 
 }

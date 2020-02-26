@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 open class FileUtil @Inject constructor() {
 
-    fun createJpegImageFile(context: Context, type: String = "jpeg"): File? {
+    open fun createJpegImageFile(context: Context, type: String = "jpeg"): File? {
         return try {
             val now = Date()
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(now)
@@ -27,7 +27,7 @@ open class FileUtil @Inject constructor() {
         }
     }
 
-    fun persistBitmap(context: Context, bitmap: Bitmap, type: String): File? {
+    open fun persistBitmap(context: Context, bitmap: Bitmap, type: String): File? {
         val file = createJpegImageFile(context, type) ?: return null
 
         try {

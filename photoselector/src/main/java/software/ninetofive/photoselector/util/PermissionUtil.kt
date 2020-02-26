@@ -15,7 +15,7 @@ open class PermissionUtil @Inject constructor() {
     var isRationaleShown: Boolean = false
     var showRationale: (() -> Unit)? = null
 
-    fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null) {
+    open fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null) {
         val context = activity ?: fragment?.context ?: return
 
         if (!hasCameraPermission(context) && Build.VERSION.SDK_INT >= 23) {
@@ -24,7 +24,7 @@ open class PermissionUtil @Inject constructor() {
         }
     }
 
-    fun hasCameraPermission(context: Context): Boolean {
+    open fun hasCameraPermission(context: Context): Boolean {
         return hasPermission(context, Manifest.permission.CAMERA)
     }
 
