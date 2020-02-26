@@ -1,35 +1,29 @@
 package software.ninetofive.photoselector.util
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import javax.inject.Inject
 
-open class PermissionUtil @Inject constructor() {
+open class PermissionUtil @Inject constructor(
+    private val buildVersionUtil: BuildVersionUtil
+) {
 
     var isRationaleShown: Boolean = false
     var showRationale: (() -> Unit)? = null
 
+    @SuppressLint("NewApi")
     open fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null) {
-        val context = activity ?: fragment?.context ?: return
-
-        if (!hasCameraPermission(context) && Build.VERSION.SDK_INT >= 23) {
-            val showPermissionRationale = !isRationaleShown && shouldShowRationale(activity, fragment)
-            requestCameraPermissions(activity, fragment, showPermissionRationale)
-        }
+        val showPermissionRationale = !isRationaleShown && shouldShowRationale(activity, fragment)
+        requestCameraPermissions(activity, fragment, showPermissionRationale)
     }
 
     open fun hasCameraPermission(context: Context): Boolean {
         return hasPermission(context, Manifest.permission.CAMERA)
-    }
-
-    fun hasPermission(context: Context, permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     fun isPermissionGranted(requestCode: Int, grantResults: IntArray): Boolean {
@@ -38,8 +32,9 @@ open class PermissionUtil @Inject constructor() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
     }
 
+    @SuppressLint("NewApi")
     open fun shouldShowRationale(activity: Activity? = null, fragment: Fragment? = null): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return if (buildVersionUtil.getAndroidApiVersion() >= 23) {
             activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
                 ?: fragment?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
                 ?: false
@@ -50,18 +45,22 @@ open class PermissionUtil @Inject constructor() {
 
     // Private functions
 
-    @RequiresApi(23)
+    private fun hasPermission(context: Context, permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("NewApi")
     private fun requestCameraPermissions(activity: Activity? = null, fragment: Fragment? = null, shouldShowPermissionRationale: Boolean) {
         if (shouldShowPermissionRationale) {
             showRationale?.invoke()
-        } else {
+        } else if (buildVersionUtil.getAndroidApiVersion() >= 23) {
             activity?.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
             fragment?.requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION_CODE)
         }
     }
 
     companion object {
-        private const val REQUEST_CAMERA_PERMISSION_CODE = 1522
+        const val REQUEST_CAMERA_PERMISSION_CODE = 1522
     }
 
 }
