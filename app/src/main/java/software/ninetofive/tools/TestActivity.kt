@@ -1,5 +1,6 @@
 package software.ninetofive.tools
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,7 +20,7 @@ import software.ninetofive.tools.util.ImageRotator
 import java.io.File
 import javax.inject.Inject
 
-class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
+class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener, AskForReviewDialog.OnRatingClicked {
 
     private lateinit var model: TestActivityViewModel
 
@@ -29,6 +30,8 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
     lateinit var imageRotator: ImageRotator
     @Inject
     lateinit var askForReview: AskForReview
+
+    private var askForReviewDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,20 +86,12 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
     }
 
     private fun onClickShowDialog(view: View) {
-        val contentView = findViewById<View>(android.R.id.content)
-
         askForReview.initialize(this, listOf(EnabledCondition(true)))
-        val dialog = AskForReviewDialog(this, R.style.AppTheme, onRatingClicked = object: AskForReviewDialog.OnRatingClicked {
-            override fun onNegativeRating(dialog: AskForReviewDialog, rating: Int) {
-                Snackbar.make(contentView, "Negative rating selected", Snackbar.LENGTH_LONG)
-            }
-
-            override fun onPositiveRating(dialog: AskForReviewDialog, rating: Int) {
-                Snackbar.make(contentView, "Positive rating selected", Snackbar.LENGTH_LONG)
-            }
-
-        })
-        askForReview.showDialog(dialog) { it.show() }
+        val dialog = AskForReviewDialog(this, R.style.AppTheme, onRatingClicked = this)
+        askForReview.showDialog(dialog) {
+            askForReviewDialog = it
+            it.show()
+        }
     }
 
     override fun onSuccessPhotoSelected(imageFile: File) {
@@ -105,7 +100,19 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener {
 
     override fun onFailurePhotoSelected(exception: PhotoSelectorException) {
         val view = findViewById<View>(android.R.id.content)
-        Snackbar.make(view, "Something went wrong: ${exception.message}", Snackbar.LENGTH_LONG)
+        Snackbar.make(view, "Something went wrong: ${exception.message}", Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun onNegativeRating(dialog: AskForReviewDialog, rating: Int) {
+        val contentView = findViewById<View>(android.R.id.content)
+        Snackbar.make(contentView, "Negative rating selected", Snackbar.LENGTH_LONG).show()
+        askForReviewDialog?.dismiss()
+    }
+
+    override fun onPositiveRating(dialog: AskForReviewDialog, rating: Int) {
+        val contentView = findViewById<View>(android.R.id.content)
+        Snackbar.make(contentView, "Positive rating selected", Snackbar.LENGTH_LONG).show()
+        askForReviewDialog?.dismiss()
     }
 
 }
