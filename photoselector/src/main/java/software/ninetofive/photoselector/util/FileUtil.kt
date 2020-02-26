@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Environment
+import software.ninetofive.photoselector.factory.FileUriFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -11,16 +12,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-open class FileUtil @Inject constructor() {
+open class FileUtil @Inject constructor(
+    private val fireUriFactory: FileUriFactory
+) {
 
-    open fun createJpegImageFile(context: Context, type: String = "jpeg"): File? {
+    open fun createImageFile(context: Context, type: String = "jpeg", fileIdentifier: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())): File? {
         return try {
-            val now = Date()
-            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(now)
-            val imageFileName = "JPEG_" + timeStamp + "_"
+            val imageFileName = "JPEG_" + fileIdentifier + "_"
             val storageDirectory = getStorageDirectory(context)
 
-            File.createTempFile(imageFileName, ".${type}", storageDirectory)
+            fireUriFactory.createTempFile(imageFileName, ".${type}", storageDirectory)
         } catch (e: IOException) {
             e.printStackTrace()
             null
@@ -28,19 +29,21 @@ open class FileUtil @Inject constructor() {
     }
 
     open fun persistBitmap(context: Context, bitmap: Bitmap, type: String): File? {
-        val file = createJpegImageFile(context, type) ?: return null
+        val file = createImageFile(context, type) ?: return null
 
-        try {
-            val outputStream = FileOutputStream(file)
+        return try {
+            val outputStream = fireUriFactory.createOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             outputStream.flush()
             outputStream.close()
-        } catch (e: Exception) {
+            file
+        } catch (e: IOException) {
             e.printStackTrace()
+            null
         }
-
-        return file
     }
+
+    // Private functions
 
     private fun getStorageDirectory(context: Context): File? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

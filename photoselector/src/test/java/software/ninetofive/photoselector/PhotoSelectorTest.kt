@@ -171,7 +171,7 @@ class PhotoSelectorTest {
         val intent: Intent = mock()
         Mockito.`when`(permissionUtil.shouldShowRationale(eq(activity), any())).thenReturn(false)
         Mockito.`when`(permissionUtil.hasCameraPermission(activity)).doReturn(true)
-        Mockito.`when`(fileUtil.createJpegImageFile(activity, "jpeg")).thenReturn(imageFile)
+        Mockito.`when`(fileUtil.createImageFile(activity, "jpeg")).thenReturn(imageFile)
         Mockito.`when`(intentFactory.createTakePictureIntent(activity)).thenReturn(intent)
 
         photoSelector.startTakePicture(activity = activity, options = options, listener = mock())
@@ -238,7 +238,7 @@ class PhotoSelectorTest {
         val intent: Intent = mock()
         Mockito.`when`(permissionUtil.shouldShowRationale(eq(activity), any())).thenReturn(false)
         Mockito.`when`(permissionUtil.hasCameraPermission(activity)).doReturn(true)
-        Mockito.`when`(fileUtil.createJpegImageFile(activity, "jpeg")).thenReturn(imageFile)
+        Mockito.`when`(fileUtil.createImageFile(activity, "jpeg")).thenReturn(imageFile)
         Mockito.`when`(intentFactory.createTakePictureIntent(activity)).thenReturn(intent)
 
         photoSelector.startTakePicture(activity = activity, options = options, listener = object : PhotoSelectorListener {

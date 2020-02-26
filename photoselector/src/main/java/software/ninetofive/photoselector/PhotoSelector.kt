@@ -112,7 +112,7 @@ class PhotoSelector @Inject constructor(
         val hasPermissions = permissionUtil.hasCameraPermission(context)
 
         if (hasPermissions) {
-            fileUtil.createJpegImageFile(context)?.let { imageFile ->
+            fileUtil.createImageFile(context)?.let { imageFile ->
                 this.currentFile = imageFile
 
                 val takePictureIntent = intentFactory.createTakePictureIntent(context)

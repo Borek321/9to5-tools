@@ -6,8 +6,9 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import javax.inject.Inject
 
-open class BitmapUtil {
+open class BitmapUtil @Inject constructor() {
 
     open fun getBitmap(contentResolver: ContentResolver, uri: Uri): Bitmap {
         return if (Build.VERSION.SDK_INT < 28) {
