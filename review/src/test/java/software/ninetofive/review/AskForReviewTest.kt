@@ -80,6 +80,22 @@ class AskForReviewTest {
         verify(preferences, times(0)).setAlreadyShowed()
     }
 
+    @Test
+    fun showDialog_doesNothingIfNotInitialized() {
+        askForReview.logger = mock()
+        askForReview.showDialog(mock()) { fail() }
+        verifyZeroInteractions(preferences)
+        verify(askForReview.logger).logError(any())
+    }
+
+    @Test
+    fun canShowDialog_doesNothingIfNotInitialized() {
+        askForReview.logger = mock()
+        askForReview.canShowDialog()
+        verifyZeroInteractions(preferences)
+        verify(askForReview.logger).logError(any())
+    }
+
     private fun conditionMock(made: Boolean): AskForReviewCondition {
         return object : AskForReviewCondition {
             override fun hasConditionBeenMade(): Boolean {
