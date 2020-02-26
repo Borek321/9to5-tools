@@ -3,11 +3,12 @@ package software.ninetofive.photoselector
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
+import software.ninetofive.photoselector.exception.GenericException
+import software.ninetofive.photoselector.exception.PermissionException
+import software.ninetofive.photoselector.exception.RequiredOptionException
 import software.ninetofive.photoselector.factory.DialogFactory
 import software.ninetofive.photoselector.factory.FileUriFactory
 import software.ninetofive.photoselector.factory.IntentFactory
@@ -159,12 +160,20 @@ class PhotoSelector @Inject constructor(
         if (options.containsKey(Options.FILE_PROVIDER_AUTHORITY_NAME)) {
             val shouldContainRationale = permissionUtil.shouldShowRationale(activity, fragment)
             if (!options.containsKey(Options.RATIONALE_HANDLER) && shouldContainRationale) {
-                listener.onFailurePhotoSelected(RequiredOptionException(Options.RATIONALE_HANDLER))
+                listener.onFailurePhotoSelected(
+                    RequiredOptionException(
+                        Options.RATIONALE_HANDLER
+                    )
+                )
             } else {
                 return true
             }
         } else {
-            listener.onFailurePhotoSelected(RequiredOptionException(Options.FILE_PROVIDER_AUTHORITY_NAME))
+            listener.onFailurePhotoSelected(
+                RequiredOptionException(
+                    Options.FILE_PROVIDER_AUTHORITY_NAME
+                )
+            )
         }
 
         return false

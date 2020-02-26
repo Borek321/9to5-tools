@@ -12,6 +12,9 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import software.ninetofive.photoselector.exception.GenericException
+import software.ninetofive.photoselector.exception.PhotoSelectorException
+import software.ninetofive.photoselector.exception.RequiredOptionException
 import software.ninetofive.photoselector.factory.DialogFactory
 import software.ninetofive.photoselector.factory.FileUriFactory
 import software.ninetofive.photoselector.factory.IntentFactory
@@ -58,7 +61,10 @@ class PhotoSelectorTest {
             }
 
             override fun onFailurePhotoSelected(exception: PhotoSelectorException) {
-                assertEquals(RequiredOptionException(PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME).message, exception.message)
+                assertEquals(
+                    RequiredOptionException(
+                        PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME
+                    ).message, exception.message)
             }
         })
 
@@ -77,7 +83,10 @@ class PhotoSelectorTest {
             }
 
             override fun onFailurePhotoSelected(exception: PhotoSelectorException) {
-                assertEquals(RequiredOptionException(PhotoSelector.Options.RATIONALE_HANDLER).message, exception.message)
+                assertEquals(
+                    RequiredOptionException(
+                        PhotoSelector.Options.RATIONALE_HANDLER
+                    ).message, exception.message)
             }
         })
 
@@ -111,7 +120,10 @@ class PhotoSelectorTest {
             }
 
             override fun onFailurePhotoSelected(exception: PhotoSelectorException) {
-                assertEquals(RequiredOptionException(PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME).message, exception.message)
+                assertEquals(
+                    RequiredOptionException(
+                        PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME
+                    ).message, exception.message)
             }
         })
 
@@ -130,7 +142,10 @@ class PhotoSelectorTest {
             }
 
             override fun onFailurePhotoSelected(exception: PhotoSelectorException) {
-                assertEquals(RequiredOptionException(PhotoSelector.Options.RATIONALE_HANDLER).message, exception.message)
+                assertEquals(
+                    RequiredOptionException(
+                        PhotoSelector.Options.RATIONALE_HANDLER
+                    ).message, exception.message)
             }
         })
 

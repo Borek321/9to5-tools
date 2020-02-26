@@ -1,4 +1,6 @@
-package software.ninetofive.photoselector
+package software.ninetofive.photoselector.exception
+
+import software.ninetofive.photoselector.PhotoSelector
 
 abstract class PhotoSelectorException: Exception()
 

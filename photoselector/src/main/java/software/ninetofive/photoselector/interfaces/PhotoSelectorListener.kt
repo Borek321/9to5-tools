@@ -1,6 +1,6 @@
 package software.ninetofive.photoselector.interfaces
 
-import software.ninetofive.photoselector.PhotoSelectorException
+import software.ninetofive.photoselector.exception.PhotoSelectorException
 import java.io.File
 
 interface PhotoSelectorListener {
