@@ -25,7 +25,7 @@ in your AndroidManifest.
 
 You can inject the `PhotoSelector` class using Dagger 2.
 
-#### Option 2: Instantiate function
+##### Option 2: Instantiate function
 
 If you don't use Dagger 2 or some other dependency injection library, you can also just use `PhotoSelector.newInstance()` to create a new PhotoSelector instance
 
