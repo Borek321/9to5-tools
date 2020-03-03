@@ -80,7 +80,7 @@ class TestActivity : DaggerAppCompatActivity(), PhotoSelectorListener, AskForRev
 
     private fun onClickTakePictureButton(view: View) {
         val authority = "$packageName.fileprovider"
-        photoSelector.startSelectImage(activity = this, options = mapOf(
+        photoSelector.startTakePicture(activity = this, options = mapOf(
             PhotoSelector.Options.FILE_PROVIDER_AUTHORITY_NAME to authority,
             PhotoSelector.Options.RATIONALE_HANDLER to { photoSelector.allowedRationale() }
         ), listener = this)
