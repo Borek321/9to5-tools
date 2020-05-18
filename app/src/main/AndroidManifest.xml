@@ -3,6 +3,7 @@
     package="software.ninetofive.tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="software.ninetofive.tools.fileprovider.READ"/>
 
     <application
         android:name=".TestApplication"

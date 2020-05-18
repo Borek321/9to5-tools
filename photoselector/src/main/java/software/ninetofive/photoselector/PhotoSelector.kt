@@ -3,6 +3,8 @@ package software.ninetofive.photoselector
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -112,10 +114,17 @@ class PhotoSelector @Inject constructor(
             fileUtil.createImageFile(context)?.let { imageFile ->
                 this.currentFile = imageFile
 
-                val takePictureIntent = intentFactory.createTakePictureIntent(context)
+                val takePictureIntent = intentFactory.createTakePictureIntent(context) ?: return@let
                 val fileProviderAuthorityName = options[Options.FILE_PROVIDER_AUTHORITY_NAME] as String
                 val photoUri = fileUriFactory.createUriForFile(imageFile, fileProviderAuthorityName, context)
-                takePictureIntent?.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+
+                // https://stackoverflow.com/questions/39787129/permission-denial-writing-android-support-v4-content-fileprovider-uri Workaround for old versions
+                val resInfoList: List<ResolveInfo> = context.packageManager.queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY)
+                for (resolveInfo in resInfoList) {
+                    val packageName = context.packageName
+                    context.grantUriPermission(packageName, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
 
                 activity?.startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE)
                 fragment?.startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE)
